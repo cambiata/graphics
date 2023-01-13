@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum PathSegment {
     M(f32, f32),
     L(f32, f32),
@@ -6,7 +6,7 @@ pub enum PathSegment {
     C(f32, f32, f32, f32, f32, f32),
     Z,
 }
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct PathSegments(pub Vec<PathSegment>);
 
 impl PathSegments {
