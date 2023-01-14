@@ -1,9 +1,11 @@
+use serde::{Deserialize, Serialize};
+
 use crate::path::{PathSegment, PathSegments};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Rectangle(pub f32, pub f32, pub f32, pub f32);
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum GraphicItem {
     Line(f32, f32, f32, f32, Stroke),
     Rect(f32, f32, f32, f32, Stroke, Fill),
@@ -11,19 +13,39 @@ pub enum GraphicItem {
     Path(PathSegments, Stroke, Fill),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Stroke {
     NoStroke,
-    Strokestyle(f32, i32), // (width, color)
+    Strokestyle(f32, Color), // (width, color)
 }
 
-#[derive(Debug, Clone)]
+impl Stroke {
+    pub fn scale(&self, s: f32) -> Stroke {
+        match self {
+            Stroke::Strokestyle(w, c) => Stroke::Strokestyle(*w * s, c.clone()),
+            Self::NoStroke => Self::NoStroke,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Fill {
     NoFill,
-    Fillstyle(i32), // color
+    Fillstyle(Color), // color
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum Color {
+    RGBA(u8, u8, u8, u8),
+    Blue,
+    Red,
+    Purple,
+    Lime,
+    Black,
+    White,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct GraphicItems(pub Vec<GraphicItem>);
 
 impl GraphicItems {
@@ -79,6 +101,7 @@ impl GraphicItems {
 
                 GraphicItem::Path(path, stroke, _) => {
                     let sw = get_stroke_width(stroke);
+
                     for segment in path.0.iter() {
                         match segment {
                             PathSegment::M(x, y) | PathSegment::L(x, y) => {
@@ -147,12 +170,51 @@ impl GraphicItems {
                     fill.clone(),
                 ),
                 GraphicItem::Path(path, stroke, fill) => {
-                    GraphicItem::Path(path.clone(), stroke.clone(), fill.clone())
+                    GraphicItem::Path(path.move_path(move_x, move_y), stroke.clone(), fill.clone())
                 }
             };
             ret.push(new_item);
         }
 
+        return GraphicItems(ret);
+    }
+
+    pub fn scale_items(&self, scale_x: f32, scale_y: f32, scale_stroke: f32) -> GraphicItems {
+        let mut ret = vec![];
+
+        for item in self.0.iter() {
+            let new_item = match item {
+                GraphicItem::Line(x1, y1, x2, y2, stroke) => GraphicItem::Line(
+                    x1 * scale_x,
+                    y1 * scale_y,
+                    x2 * scale_x,
+                    y2 * scale_y,
+                    stroke.scale(scale_stroke),
+                ),
+                GraphicItem::Rect(x, y, w, h, stroke, fill) => GraphicItem::Rect(
+                    x * scale_x,
+                    y * scale_y,
+                    w * scale_x,
+                    h * scale_y,
+                    stroke.scale(scale_stroke),
+                    fill.clone(),
+                ),
+                GraphicItem::Ellipse(x, y, w, h, stroke, fill) => GraphicItem::Ellipse(
+                    x * scale_x,
+                    y * scale_y,
+                    w * scale_x,
+                    h * scale_y,
+                    stroke.clone(),
+                    fill.clone(),
+                ),
+                GraphicItem::Path(path, stroke, fill) => GraphicItem::Path(
+                    path.scale_path(scale_x, scale_y),
+                    stroke.scale(scale_stroke),
+                    fill.clone(),
+                ),
+            };
+            ret.push(new_item);
+        }
         return GraphicItems(ret);
     }
 }

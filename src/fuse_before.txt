@@ -1,0 +1,95 @@
+FuRegisterClass("RustTestFuse", CT_SourceTool, {
+    REGS_Name = "RustTestFuse",
+    REGS_Category = "RustGenerated",
+
+    REGS_OpIconString = "XX2",
+    REGS_OpDescription = "RustTestFuse example.",    
+    REGS_Company = "Cambiata",
+    REGS_URL = "",
+    
+    REG_Source_GlobalCtrls = true,
+    REG_Source_SizeCtrls = true,
+    REG_Source_AspectCtrls = true,
+    REG_Source_DepthCtrls = true,   
+})	
+
+function Create()
+    -- outputs
+    OutImage = self:AddOutput("Output", "Output", {
+        LINKID_DataType = "Image",
+        LINK_Main = 1,
+        })
+end
+
+function NotifyChanged(inp, param, time)
+
+end
+
+function calcAspect(ref_img)
+    return (ref_img.Height * ref_img.YScale) / (ref_img.Width * ref_img.XScale)
+end
+function Process(req)
+
+    -- Standard set up for Creator tools
+    local realwidth = Width;
+    local realheight = Height;
+    
+    -- 
+    Width = Width / Scale
+    Height = Height / Scale
+    Scale = 1
+    
+    -- Attributes for new images
+    local imgattrs = {
+        IMG_Document = self.Comp,
+        { IMG_Channel = "Red", },
+        { IMG_Channel = "Green", },
+        { IMG_Channel = "Blue", },
+        { IMG_Channel = "Alpha", },
+        IMG_Width = Width,
+        IMG_Height = Height,
+        IMG_XScale = XAspect,
+        IMG_YScale = YAspect,
+        IMAT_OriginalWidth = realwidth,
+        IMAT_OriginalHeight = realheight,
+        IMG_Quality = not req:IsQuick(),
+        IMG_MotionBlurQuality = not req:IsNoMotionBlur(),
+        }
+
+    -- Set up image
+    local img = Image(imgattrs)
+    local out = img:CopyOf()
+    local p = Pixel({R=0,G=0,B=0,A=0})
+    img:Fill(p) -- Clear the image so the next frame doesnt contain the previous one.
+    out:Fill(p)
+
+    local aspect = calcAspect(img)
+        
+    local imageHeight = img.Height
+    local imageWidth = img.Width
+    local centreX = (imageWidth/2)/imageWidth
+    local centreY = ((imageHeight/2)/imageHeight)*aspect
+
+    print("imageHeight", imageHeight)
+    print("imageWidth", imageWidth)
+    print("aspect", aspect)
+    print("centreX", centreX)
+    print("centreY", centreY)
+    ------------------------------------------------------
+    ------------------------------------------------------
+-- fuse_before.txt
+
+
+	-- red line lower left to upper right --------------------
+
+    --  local line2 = Shape()
+    --  line2:MoveTo(0, 0)
+    --  line2:LineTo(1, 1*aspect)
+    --  line2 = line2:OutlineOfShape(0.01,"OLT_Solid")--     
+    --  local ic = ImageChannel(out, 8)
+    --  ic:ShapeFill(line2)
+    --  local cs = ChannelStyle()
+    --  cs.Color = Pixel({R = 1, G = 0, B = 0, A = 1})
+    --  if self.Status == "OK" then
+    --     ic:PutToImage("CM_Merge", cs)
+    --  end

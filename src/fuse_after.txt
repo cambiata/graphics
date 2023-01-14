@@ -1,0 +1,31 @@
+-- fuse_after.txt
+
+    OutImage:Set(req, out)
+
+end        
+        
+
+
+-- Shape is a Shape object
+-- P1 is the start point. P2 is the outgoing handle. P3 is the incoming handle. P4 is the end point.
+-- subdivs is the number of line segments used to create the curve.
+-- aspect is necessary to convert Y coordinates for non-square images. Could use convertY instead, but
+-- 	that requires passing the img instead. I prefer to calculate the aspect just once.
+function BezierTo2(shape, p1, p2, p3, p4, subdivs)
+	for i=0,subdivs do
+		t = solvePoint(p1,p2,p3,p4, i/subdivs)
+		shape:LineTo(t.X, t.Y)
+	end
+	return shape
+end
+
+-- De Casteljaus equation finds x,y coordinates for a given t
+-- p1 - p4 are Point DataType: Tables with indices X and Y 
+-- The return value of p is a table in the same format.
+function solvePoint(p1, p2, p3, p4, t)
+	local p = {}
+	p.X = (1-t)^3*p1.X + 3*(1-t)^2*t*p2.X + 3*(1-t)*t^2*p3.X + t^3*p4.X
+	p.Y = (1-t)^3*p1.Y + 3*(1-t)^2*t*p2.Y + 3*(1-t)*t^2*p3.Y + t^3*p4.Y
+	
+	return p
+end

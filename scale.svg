@@ -1,0 +1,5 @@
+<svg viewBox="0 0 215 120">
+    <rect x="10" y="10" width="100" height="100" stroke="blue" stroke-width="20" fill="red"/>
+    <ellipse cx="160" cy="60" rx="50" ry="50" stroke="purple" stroke-width="10" fill="lime"/>
+    <rect x="0" y="0" width="215" height="120" stroke="black" stroke-width="1" fill="none"/>
+</svg>
