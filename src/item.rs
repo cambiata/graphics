@@ -1,9 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::core::Rectangle;
 use crate::path::{PathSegment, PathSegments};
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Rectangle(pub f32, pub f32, pub f32, pub f32);
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum GraphicItem {

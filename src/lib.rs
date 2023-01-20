@@ -1,18 +1,15 @@
 pub mod builder;
-pub mod fuse;
+pub mod core;
 pub mod item;
 pub mod path;
 
 #[cfg(test)]
 mod tests {
-
-    use std::ptr::read;
-
     use crate::builder::FuseBuilder;
+    use crate::builder::SvgBuilder;
 
     use super::{
-        builder::{GraphicBuilder, SvgBuilder, TestBuilder},
-        fuse,
+        builder::{GraphicBuilder, TestBuilder},
         item::{
             Color::{Black, Blue, Lime, Purple, Red, White, RGBA},
             Fill::{Fillstyle, NoFill},
@@ -116,6 +113,7 @@ mod tests {
         let factor = 0.001;
         items = items.scale_items(factor, factor, factor);
         let fuse = FuseBuilder::new().build(items);
+
         std::fs::write("C:/Users/Cambiata MusikProd/AppData/Roaming/Blackmagic Design/Fusion/Fuses/rust_test_fuse.fuse", fuse).unwrap();
     }
 
