@@ -1,7 +1,10 @@
 pub mod builder;
 pub mod core;
+pub mod font;
 pub mod item;
 pub mod path;
+// pub mod svgbuilder;
+// pub mod svgtext;
 
 #[cfg(test)]
 mod tests {
@@ -128,5 +131,38 @@ mod tests {
         std::fs::write("cadenza.svg", svg).unwrap();
         let fuse = FuseBuilder::new().build(items_fuse);
         std::fs::write("C:/Users/Cambiata MusikProd/AppData/Roaming/Blackmagic Design/Fusion/Fuses/rust_test_fuse.fuse", fuse).unwrap();
+    }
+
+    // use crate::text::Text;
+
+    use rusttype::{Font, Point};
+    use svg::{node::element::Rectangle, Document};
+
+    #[test]
+    fn test_font() {
+        println!("hello:");
+
+        let font_data = include_bytes!("../MTF-Cadence-Fin.ttf");
+        // let font_data = include_bytes!("../Leland.otf");
+        // let font_data = include_bytes!("../LelandText.otf");
+        // let font_data = include_bytes!("../AvenirNextCyr-Medium.ttf");
+        let font = Font::try_from_bytes(font_data as &[u8]).expect("Error constructing Font");
+
+        let x = 5.;
+        let y = 10.;
+
+        let pathtext = crate::font::PathText::builder()
+            .size(200.0)
+            .start(Point { x, y })
+            .build(&font, "&");
+
+        let items = GraphicItems(vec![Path(
+            PathSegments(pathtext.path_segments),
+            NoStroke,
+            Fillstyle(Blue),
+        )]);
+
+        let svg = SvgBuilder::new().build(items);
+        std::fs::write("clef.svg", svg).unwrap();
     }
 }
