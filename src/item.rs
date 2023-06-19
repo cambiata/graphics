@@ -138,10 +138,10 @@ impl GraphicItems {
                 }
             }
         }
-        println!(
-            "x_min:{}, y_min:{}, x_max:{}, y_max:{}",
-            x_min, y_min, x_max, y_max
-        );
+        // println!(
+        //     "x_min:{}, y_min:{}, x_max:{}, y_max:{}",
+        //     x_min, y_min, x_max, y_max
+        // );
         Rectangle(x_min, y_min, x_max, y_max)
     }
 

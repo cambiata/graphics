@@ -1,18 +1,17 @@
+#![allow(unused)]
 pub mod builder;
 pub mod core;
+pub mod error;
 pub mod font;
 pub mod item;
 pub mod path;
-// pub mod svgbuilder;
-// pub mod svgtext;
+pub mod prelude;
 
 #[cfg(test)]
 mod tests {
-    use crate::builder::FuseBuilder;
-    use crate::builder::SvgBuilder;
 
     use super::{
-        builder::{GraphicBuilder, TestBuilder},
+        builder::{fuse::FuseBuilder, svg::SvgBuilder, GraphicBuilder, TestBuilder},
         item::{
             Color::{Black, Blue, Lime, Purple, Red, White, RGBA},
             Fill::{Fillstyle, NoFill},
@@ -49,8 +48,8 @@ mod tests {
             Ellipse(50., 0., 50., 50., Strokestyle(10., Purple), Fillstyle(Red)),
         ]);
         items = items.scale_items(2., 2., 2.);
-        let svg = SvgBuilder::new().build(items);
-        std::fs::write("scale.svg", svg).unwrap();
+        let svg = SvgBuilder::new().build(items).unwrap();
+        std::fs::write("./output/scale.svg", svg);
     }
 
     #[test]
@@ -59,7 +58,7 @@ mod tests {
             Rect(0., 0., 50., 50., Strokestyle(10., Lime), Fillstyle(Blue)),
             Ellipse(50., 0., 50., 50., Strokestyle(10., Purple), Fillstyle(Red)),
         ]);
-        TestBuilder::new().build(items);
+        TestBuilder::new().build(items).unwrap();
     }
 
     #[test]
@@ -69,8 +68,8 @@ mod tests {
             Ellipse(50., 0., 50., 50., Strokestyle(10., Purple), Fillstyle(Red)),
             Line(0., 50., 100., 0., Strokestyle(5., Red)),
         ]);
-        let svg = SvgBuilder::new().build(items);
-        std::fs::write("test.svg", svg).unwrap();
+        let svg = SvgBuilder::new().build(items).unwrap();
+        std::fs::write("./output/test.svg", svg);
     }
 
     #[test]
@@ -85,8 +84,8 @@ mod tests {
             Strokestyle(2., Lime),
             Fillstyle(Blue),
         )]);
-        let svg = SvgBuilder::new().build(items);
-        std::fs::write("path.svg", svg).unwrap();
+        let svg = SvgBuilder::new().build(items).unwrap();
+        std::fs::write("./output/path.svg", svg).unwrap();
     }
 
     #[test]
@@ -115,9 +114,9 @@ mod tests {
 
         let factor = 0.001;
         items = items.scale_items(factor, factor, factor);
-        let fuse = FuseBuilder::new().build(items);
-
-        std::fs::write("C:/Users/Cambiata MusikProd/AppData/Roaming/Blackmagic Design/Fusion/Fuses/rust_test_fuse.fuse", fuse).unwrap();
+        let fuse = FuseBuilder::new().build(items).unwrap();
+        std::fs::write("./output/rust_test_fuse.fuse", &fuse);
+        std::fs::write("C:/Users/Cambiata MusikProd/AppData/Roaming/Blackmagic Design/Fusion/Fuses/rust_test_fuse.fuse", &fuse);
     }
 
     #[test]
@@ -127,22 +126,18 @@ mod tests {
         let path = path.scale_path(0.1, -0.1);
         let items = GraphicItems(vec![Path(path, NoStroke, Fillstyle(White))]);
         let items_fuse = items.scale_items(0.002, -0.002, 0.002);
-        let svg = SvgBuilder::new().build(items);
+        let svg = SvgBuilder::new().build(items).unwrap();
         std::fs::write("cadenza.svg", svg).unwrap();
-        let fuse = FuseBuilder::new().build(items_fuse);
-        std::fs::write("C:/Users/Cambiata MusikProd/AppData/Roaming/Blackmagic Design/Fusion/Fuses/rust_test_fuse.fuse", fuse).unwrap();
+        let fuse = FuseBuilder::new().build(items_fuse).unwrap();
+        std::fs::write("./output/cadenza-8.fuse", &fuse).unwrap();
+        std::fs::write("C:/Users/Cambiata MusikProd/AppData/Roaming/Blackmagic Design/Fusion/Fuses/rust_test_fuse.fuse", &fuse).unwrap();
     }
 
-    // use crate::text::Text;
-
     use rusttype::{Font, Point};
-    use svg::{node::element::Rectangle, Document};
 
     #[test]
     fn test_font() {
-        println!("hello:");
-
-        let font_data = include_bytes!("../MTF-Cadence-Fin.ttf");
+        let font_data = include_bytes!("../fonts/MTF-Cadence-Fin.ttf");
         // let font_data = include_bytes!("../Leland.otf");
         // let font_data = include_bytes!("../LelandText.otf");
         // let font_data = include_bytes!("../AvenirNextCyr-Medium.ttf");
@@ -162,7 +157,30 @@ mod tests {
             Fillstyle(Blue),
         )]);
 
-        let svg = SvgBuilder::new().build(items);
-        std::fs::write("clef.svg", svg).unwrap();
+        let svg = SvgBuilder::new().build(items).unwrap();
+        std::fs::write("./output/clef.svg", svg).unwrap();
+    }
+
+    #[test]
+    fn test_avenir() {
+        let font_data = include_bytes!("../fonts/AvenirNextCyr-Medium.ttf");
+        // let font_data = include_bytes!("../fonts/Leland.otf");
+        let font = Font::try_from_bytes(font_data as &[u8]).expect("Error constructing Font");
+        let x = 5.;
+        let y = 10.;
+
+        let pathtext = crate::font::PathText::builder()
+            .size(200.0)
+            .start(Point { x, y })
+            .build(&font, "ABCabc123&%#åäöÅÄÖ");
+
+        let items = GraphicItems(vec![Path(
+            PathSegments(pathtext.path_segments),
+            NoStroke,
+            Fillstyle(Blue),
+        )]);
+
+        let svg = SvgBuilder::new().build(items).unwrap();
+        std::fs::write("./output/avenir.svg", svg).unwrap();
     }
 }

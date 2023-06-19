@@ -15,19 +15,19 @@ impl PathText {
         }
     }
 
-    pub fn builder() -> PathTextBuilder<'static> {
+    pub fn builder() -> FontTextBuilder<'static> {
         Default::default()
     }
 }
 
-pub struct PathTextBuilder<'a> {
+pub struct FontTextBuilder<'a> {
     pub fill: &'a str,
     pub size: f32,
     pub start: Point<f32>,
     pub letter_spacing: f32,
 }
 
-impl Default for PathTextBuilder<'static> {
+impl Default for FontTextBuilder<'static> {
     fn default() -> Self {
         Self {
             fill: "#000",
@@ -38,7 +38,7 @@ impl Default for PathTextBuilder<'static> {
     }
 }
 
-impl PathTextBuilder<'_> {
+impl FontTextBuilder<'_> {
     pub fn size(mut self, size: f32) -> Self {
         self.size = size;
         self
@@ -86,7 +86,7 @@ impl PathTextBuilder<'_> {
 
             x += bounding_box.min.x;
 
-            let mut xpathbuilder = crate::font::XPathTextBuilder {
+            let mut xpathbuilder = crate::font::PathTextBuilder {
                 x: x,
                 y: v_metrics.ascent + bounding_box.min.y,
                 p: &mut p,
@@ -105,20 +105,20 @@ impl PathTextBuilder<'_> {
     }
 }
 
-pub struct XPathTextBuilder<'a> {
+pub struct PathTextBuilder<'a> {
     pub x: f32,
     pub y: f32,
     pub p: &'a mut Vec<PathSegment>,
 }
 
-impl<'a> XPathTextBuilder<'a> {
+impl<'a> PathTextBuilder<'a> {
     pub fn new(x: f32, y: f32, p: &'a mut Vec<PathSegment>) -> Self {
         // let mut p: Vec<PathSegment> = vec![];
         Self { x, y, p }
     }
 }
 
-impl OutlineBuilder for XPathTextBuilder<'_> {
+impl OutlineBuilder for PathTextBuilder<'_> {
     fn move_to(&mut self, x: f32, y: f32) {
         // println!("move_to:");
         self.p.push(PathSegment::M(x + self.x, y + self.y));
@@ -152,7 +152,6 @@ impl OutlineBuilder for XPathTextBuilder<'_> {
     }
 
     fn close(&mut self) {
-        println!("close:");
         self.p.push(PathSegment::Z);
     }
 }

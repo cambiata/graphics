@@ -1,7 +1,5 @@
 -- fuse_after.txt
-
     OutImage:Set(req, out)
-
 end        
         
 
@@ -25,7 +23,6 @@ end
 function solvePoint(p1, p2, p3, p4, t)
 	local p = {}
 	p.X = (1-t)^3*p1.X + 3*(1-t)^2*t*p2.X + 3*(1-t)*t^2*p3.X + t^3*p4.X
-	p.Y = (1-t)^3*p1.Y + 3*(1-t)^2*t*p2.Y + 3*(1-t)*t^2*p3.Y + t^3*p4.Y
-	
+	p.Y = (1-t)^3*p1.Y + 3*(1-t)^2*t*p2.Y + 3*(1-t)*t^2*p3.Y + t^3*p4.Y	
 	return p
 end

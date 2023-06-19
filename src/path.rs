@@ -28,7 +28,7 @@ impl PathSegments {
                 PathSegment::Z => path_buf.push_str("Z "),
             }
         }
-        println!("path_buf:{:?}", path_buf);
+        // println!("path_buf:{:?}", path_buf);
         path_buf
     }
 
@@ -82,7 +82,6 @@ impl PathSegments {
 
     pub fn from_json(json: &str) -> PathSegments {
         let path: Vec<PathSegment> = serde_json::from_str(json).unwrap();
-        println!("path:{:?}", path);
         PathSegments(path)
     }
 }

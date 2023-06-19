@@ -82,22 +82,54 @@ function Process(req)
 
 	-- red line lower left to upper right --------------------
 
-	local line2 = Shape()
-	line2:MoveTo(0, 0)
-	line2:LineTo(1, 1*aspect)
-	line2 = line2:OutlineOfShape(0.01,"OLT_Solid")	
-	local ic = ImageChannel(out, 8)
-	ic:ShapeFill(line2)
-	local cs = ChannelStyle()
+    --  local line2 = Shape()
+    --  line2:MoveTo(0, 0)
+    --  line2:LineTo(1, 1*aspect)
+    --  line2 = line2:OutlineOfShape(0.01,"OLT_Solid")--     
+    --  local ic = ImageChannel(out, 8)
+    --  ic:ShapeFill(line2)
+    --  local cs = ChannelStyle()
+    --  cs.Color = Pixel({R = 1, G = 0, B = 0, A = 1})
+    --  if self.Status == "OK" then
+    --     ic:PutToImage("CM_Merge", cs)
+    --  end
+
+
+
+
+-- dynamically added items:
+
+
+	line = Shape()
+	line:MoveTo(0.0050000004, 0.0050000004)
+	line = BezierTo2(line, {X=0.0050000004, Y=0.0050000004}, {X=0.105000004, Y=0.0050000004}, {X=0.105000004, Y=0.105000004}, {X=0.205, Y=0.105000004}, 20)
+	line:LineTo(0.0050000004, 0.105000004)
+	line:LineTo(0.0050000004, 0.0050000004)
+	ic = ImageChannel(out, 8)
+	ic:ShapeFill(line)	
+	cs = ChannelStyle()
+	cs.Color = Pixel({R = 0, G = 0, B = 1, A = 1})
+	if self.Status == "OK" then
+	    ic:PutToImage("CM_Merge", cs)
+	end
+	
+	line = Shape()
+	line:MoveTo(0.0050000004, 0.0050000004)
+	line = BezierTo2(line, {X=0.0050000004, Y=0.0050000004}, {X=0.105000004, Y=0.0050000004}, {X=0.105000004, Y=0.105000004}, {X=0.205, Y=0.105000004}, 20)
+	line:LineTo(0.0050000004, 0.105000004)
+	line:LineTo(0.0050000004, 0.0050000004)
+	line = line:OutlineOfShape(0.010000001,"OLT_Solid")
+	ic = ImageChannel(out, 8)
+	ic:ShapeFill(line)	
+	cs = ChannelStyle()
 	cs.Color = Pixel({R = 1, G = 0, B = 0, A = 1})
 	if self.Status == "OK" then
-		ic:PutToImage("CM_Merge", cs)
+	    ic:PutToImage("CM_Merge", cs)
 	end
+	
 
 -- fuse_after.txt
-
     OutImage:Set(req, out)
-
 end        
         
 
@@ -121,7 +153,6 @@ end
 function solvePoint(p1, p2, p3, p4, t)
 	local p = {}
 	p.X = (1-t)^3*p1.X + 3*(1-t)^2*t*p2.X + 3*(1-t)*t^2*p3.X + t^3*p4.X
-	p.Y = (1-t)^3*p1.Y + 3*(1-t)^2*t*p2.Y + 3*(1-t)*t^2*p3.Y + t^3*p4.Y
-	
+	p.Y = (1-t)^3*p1.Y + 3*(1-t)^2*t*p2.Y + 3*(1-t)*t^2*p3.Y + t^3*p4.Y	
 	return p
 end
