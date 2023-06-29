@@ -177,32 +177,8 @@ mod tests {
 
             cadenza.push_str(&s);
         }
-        // s.push_str(json.as_str());
 
         fs::write("./cadenza/cadenza.rs", cadenza).unwrap();
-
-        let p: PathSegments = PathSegments(super::CADENZA_3X.to_vec());
-        // let path = PathSegments::from_json(json.as_str());
-        // let path: PathSegments = dbg!(path);
-        // dbg!(path);
-
-        // let path_3 = PathSegments(vec![
-        //     M(301.0, 281.0),
-        //     L(301.0, 160.0),
-        //     L(0.0, -1.0),
-        //     L(0.0, 124.0),
-        //     L(301.0, 281.0),
-        //     Z,
-        // ]);
-
-        // let path = path.scale_path(0.1, -0.1);
-        // let items = GraphicItems(vec![Path(path, NoStroke, Fillstyle(White))]);
-        // let items_fuse = items.scale_items(0.002, -0.002, 0.002);
-        // let svg = SvgBuilder::new().build(items).unwrap();
-        // std::fs::write("cadenza-load.svg", svg).unwrap();
-        // let fuse = FuseBuilder::new().build(items_fuse).unwrap();
-        // std::fs::write("./output/cadenza-8.fuse", &fuse).unwrap();
-        // std::fs::write("C:/Users/Cambiata MusikProd/AppData/Roaming/Blackmagic Design/Fusion/Fuses/rust_test_fuse.fuse", &fuse).unwrap();
     }
 
     use rusttype::{Font, Point};

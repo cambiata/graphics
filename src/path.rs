@@ -32,6 +32,13 @@ impl PathSegments {
         path_buf
     }
 
+    pub fn from_json(json: &str) -> PathSegments {
+        let path: Vec<PathSegment> = serde_json::from_str(json).unwrap();
+        PathSegments(path)
+    }
+}
+
+impl PathSegments {
     pub fn move_path(&self, move_x: f32, move_y: f32) -> PathSegments {
         let mut segments: Vec<PathSegment> = vec![];
         for segment in self.0.iter() {
@@ -78,10 +85,5 @@ impl PathSegments {
             segments.push(new_segment);
         }
         PathSegments(segments)
-    }
-
-    pub fn from_json(json: &str) -> PathSegments {
-        let path: Vec<PathSegment> = serde_json::from_str(json).unwrap();
-        PathSegments(path)
     }
 }
