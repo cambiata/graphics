@@ -1,2 +1,2 @@
-pub use crate::error::GraphicsError::Generic;
+pub use crate::error::GraphicsError::{Basic, Generic};
 pub type Result<T> = anyhow::Result<T>;

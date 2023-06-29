@@ -96,11 +96,6 @@ mod tests {
 
     #[test]
     fn test_fuse() {
-        // let mut items = GraphicItems(vec![
-        //     Rect(0., 0., 100., 100., Strokestyle(5., Red), Fillstyle(Blue)),
-        //     // Ellipse(50., 0., 50., 50., Strokestyle(10., 0), Fillstyle(0)),
-        //     // Line(0., 0., 100., 100., Strokestyle(5., 0)),
-        // ]);
         let mut items = GraphicItems(vec![Path(
             PathSegments(vec![
                 M(0., 0.),
@@ -111,12 +106,6 @@ mod tests {
             Strokestyle(10., Red),
             Fillstyle(Blue),
         )]);
-
-        // let mut items = GraphicItems(vec![
-        //     Rect(0., 0., 50., 50., Strokestyle(5., Lime), Fillstyle(Purple)),
-        //     Ellipse(50., 0., 50., 50., Strokestyle(10., Blue), Fillstyle(Red)),
-        //     Line(0., 50., 100., 0., Strokestyle(5., Lime)),
-        // ]);
 
         let factor = 0.001;
         items = items.scale_items(factor, factor, factor);
