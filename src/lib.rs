@@ -3,6 +3,7 @@ pub mod builder;
 pub mod core;
 pub mod error;
 pub mod font;
+pub mod glyphs;
 pub mod item;
 pub mod path;
 pub mod prelude;
@@ -10,8 +11,13 @@ pub mod prelude;
 #[cfg(test)]
 mod tests {
 
+    use std::fs;
+
+    use crate::CADENZA_3;
+
     use super::{
         builder::{fuse::FuseBuilder, svg::SvgBuilder, GraphicBuilder, TestBuilder},
+        glyphs::cadenza::*,
         item::{
             Color::{Black, Blue, Lime, Purple, Red, White, RGBA},
             Fill::{Fillstyle, NoFill},
@@ -133,6 +139,83 @@ mod tests {
         std::fs::write("C:/Users/Cambiata MusikProd/AppData/Roaming/Blackmagic Design/Fusion/Fuses/rust_test_fuse.fuse", &fuse).unwrap();
     }
 
+    #[test]
+    fn test_data() {
+        // let json = include_str!("../cadenza/cadenza-8.json");
+        // let path = PathSegments::from_json(json);
+        // let path = path.scale_path(0.1, -0.1);
+
+        let path = PathSegments(CADENZA_8.to_vec()).scale_path(1.0, -1.0);
+        let mut items = GraphicItems(vec![Path(path, NoStroke, Fillstyle(White))]);
+        let items_fuse = items.scale_items(0.002, -0.002, 0.002);
+        let svg = SvgBuilder::new().build(items).unwrap();
+        std::fs::write("./data.svg", svg).unwrap();
+        // let fuse = FuseBuilder::new().build(items_fuse).unwrap();
+        // std::fs::write("./output/cadenza-8.fuse", &fuse).unwrap();
+        // std::fs::write("C:/Users/Cambiata MusikProd/AppData/Roaming/Blackmagic Design/Fusion/Fuses/rust_test_fuse.fuse", &fuse).unwrap();
+    }
+
+    #[test]
+    fn test_json_generate_cadenza_segment_data() {
+        let mut cadenza = "".to_string();
+
+        for num in 3..181 {
+            let filename = format!("cadenza-{}", num);
+            let pathname = format!("./cadenza/{}.json", filename);
+            // let json = include_str!("../cadenza/cadenza-8.json");
+            let mut json = fs::read_to_string(&pathname).unwrap();
+            let mut s = format!(
+                "// pub const {} : &'static [PathSegment] = &",
+                filename.to_uppercase()
+            );
+            s = s.replace("-", "_");
+            s = s.replace("\r", "");
+            s = s.replace("\n", "");
+            s = s.replace("  ", " ");
+
+            json = json.replace("\r", "");
+            json = json.replace("\n", "");
+            json = json.replace("  ", "==");
+            json = json.replace("==", "");
+            json = json.replace("\"", " ");
+            json = json.replace(" :[", "(");
+            json = json.replace(" : [", "(");
+            json = json.replace("]}", ")");
+            json = json.replace("{ ", " ");
+            s.push_str(&json);
+
+            s.push_str(";\r\n\r\n");
+
+            cadenza.push_str(&s);
+        }
+        // s.push_str(json.as_str());
+
+        fs::write("./cadenza/cadenza.rs", cadenza).unwrap();
+
+        let p: PathSegments = PathSegments(super::CADENZA_3X.to_vec());
+        // let path = PathSegments::from_json(json.as_str());
+        // let path: PathSegments = dbg!(path);
+        // dbg!(path);
+
+        // let path_3 = PathSegments(vec![
+        //     M(301.0, 281.0),
+        //     L(301.0, 160.0),
+        //     L(0.0, -1.0),
+        //     L(0.0, 124.0),
+        //     L(301.0, 281.0),
+        //     Z,
+        // ]);
+
+        // let path = path.scale_path(0.1, -0.1);
+        // let items = GraphicItems(vec![Path(path, NoStroke, Fillstyle(White))]);
+        // let items_fuse = items.scale_items(0.002, -0.002, 0.002);
+        // let svg = SvgBuilder::new().build(items).unwrap();
+        // std::fs::write("cadenza-load.svg", svg).unwrap();
+        // let fuse = FuseBuilder::new().build(items_fuse).unwrap();
+        // std::fs::write("./output/cadenza-8.fuse", &fuse).unwrap();
+        // std::fs::write("C:/Users/Cambiata MusikProd/AppData/Roaming/Blackmagic Design/Fusion/Fuses/rust_test_fuse.fuse", &fuse).unwrap();
+    }
+
     use rusttype::{Font, Point};
 
     #[test]
@@ -184,3 +267,24 @@ mod tests {
         std::fs::write("./output/avenir.svg", svg).unwrap();
     }
 }
+
+use crate::path::PathSegment::*;
+use crate::path::*;
+
+const CADENZA_3X: &'static [PathSegment] = &[
+    M(301.0, 281.0),
+    L(301.0, 160.0),
+    L(0.0, -1.0),
+    L(0.0, 124.0),
+    L(301.0, 281.0),
+    Z,
+];
+
+const CADENZA_3: &'static [PathSegment] = &[
+    M(301.0, 281.0),
+    L(301.0, 160.0),
+    L(0.0, -1.0),
+    L(0.0, 124.0),
+    L(301.0, 281.0),
+    Z,
+];
