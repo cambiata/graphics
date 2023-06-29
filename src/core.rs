@@ -77,6 +77,7 @@ impl<'a> IntoIterator for &'a mut Rectangles {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn example() {
         let r_left = Rectangle(0., 0., 10., 10.);
@@ -84,6 +85,7 @@ mod tests {
         let overlap_x = r_left.overlap_x(&r_right);
         println!("overlap_x:{:?}", overlap_x);
     }
+
     #[test]
     fn example2() {
         let left = Rectangles::new(vec![

@@ -13,7 +13,7 @@ use crate::path::{
     PathSegments,
 };
 
-use super::GraphicBuilder;
+pub use super::GraphicBuilder;
 
 pub struct SvgBuilder {}
 
@@ -111,7 +111,7 @@ impl GraphicBuilder for SvgBuilder {
                         svg.write_attribute("stroke-width", w);
                     }
                     if let Fill::Fillstyle(color) = fill {
-                        svg.write_attribute("fill", "tomato");
+                        svg.write_attribute("fill", "black");
                     } else {
                         svg.write_attribute("fill", "none");
                     }
