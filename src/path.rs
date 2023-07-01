@@ -86,4 +86,8 @@ impl PathSegments {
         }
         PathSegments(segments)
     }
+
+    pub fn inv01(&self) -> PathSegments {
+        self.scale_path(0.1, -0.1)
+    }
 }

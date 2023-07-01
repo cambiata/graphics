@@ -46,7 +46,22 @@ pub enum Color {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct GraphicItems(pub Vec<GraphicItem>);
 
+impl GraphicItems {}
+
 impl GraphicItems {
+    pub fn new() -> Self {
+        Self(vec![])
+    }
+
+    pub fn push(&mut self, item: GraphicItem) {
+        self.0.push(item)
+        // self.0.push(item);
+    }
+
+    pub fn extend(&mut self, items: GraphicItems) {
+        self.0.extend(items.0);
+    }
+
     pub fn bbox(&self) -> Rectangle {
         let mut x_min = f32::MAX;
         let mut y_min = f32::MAX;
