@@ -39,8 +39,11 @@ pub enum Color {
     RGBA(u8, u8, u8, u8),
     Blue,
     Red,
+    Orange,
     Purple,
     Lime,
+    Gray,
+    LightGray,
     Black,
     White,
 }
@@ -50,7 +53,10 @@ impl Display for Color {
         match self {
             Color::RGBA(r, g, b, a) => write!(f, "rgba({},{},{},{})", r, g, b, a),
             Color::Blue => write!(f, "blue"),
+            Color::LightGray => write!(f, "lightgray"),
+            Color::Gray => write!(f, "gray"),
             Color::Red => write!(f, "red"),
+            Color::Orange => write!(f, "orange"),
             Color::Purple => write!(f, "purple"),
             Color::Lime => write!(f, "lime"),
             Color::Black => write!(f, "black"),
