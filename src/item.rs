@@ -1,3 +1,5 @@
+use std::fmt::{Display, Formatter};
+
 use serde::{Deserialize, Serialize};
 
 use crate::core::Rectangle;
@@ -41,6 +43,20 @@ pub enum Color {
     Lime,
     Black,
     White,
+}
+
+impl Display for Color {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Color::RGBA(r, g, b, a) => write!(f, "rgba({},{},{},{})", r, g, b, a),
+            Color::Blue => write!(f, "blue"),
+            Color::Red => write!(f, "red"),
+            Color::Purple => write!(f, "purple"),
+            Color::Lime => write!(f, "lime"),
+            Color::Black => write!(f, "black"),
+            Color::White => write!(f, "white"),
+        }
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]

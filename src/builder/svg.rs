@@ -60,7 +60,7 @@ impl GraphicBuilder for SvgBuilder {
                     svg.write_attribute("x2", x2);
                     svg.write_attribute("y2", y2);
                     if let Stroke::Strokestyle(w, color) = stroke {
-                        svg.write_attribute("stroke", "orange");
+                        svg.write_attribute("stroke", color.to_string().as_str());
                         svg.write_attribute("stroke-width", w);
                     }
                     svg.end_element();
@@ -73,11 +73,12 @@ impl GraphicBuilder for SvgBuilder {
                     svg.write_attribute("width", w);
                     svg.write_attribute("height", h);
                     if let Stroke::Strokestyle(w, color) = stroke {
-                        svg.write_attribute("stroke", "blue");
+                        svg.write_attribute("stroke", color.to_string().as_str());
                         svg.write_attribute("stroke-width", w);
                     }
                     if let Fill::Fillstyle(color) = fill {
-                        svg.write_attribute("fill", "red");
+                        dbg!(color.to_string());
+                        svg.write_attribute("fill", color.to_string().as_str());
                     } else {
                         svg.write_attribute("fill", "none");
                     }
@@ -93,11 +94,11 @@ impl GraphicBuilder for SvgBuilder {
                     svg.write_attribute("rx", &(w / 2.0));
                     svg.write_attribute("ry", &(h / 2.0));
                     if let Stroke::Strokestyle(w, color) = stroke {
-                        svg.write_attribute("stroke", "purple");
+                        svg.write_attribute("stroke", color.to_string().as_str());
                         svg.write_attribute("stroke-width", w);
                     }
                     if let Fill::Fillstyle(color) = fill {
-                        svg.write_attribute("fill", "lime");
+                        svg.write_attribute("fill", color.to_string().as_str());
                     } else {
                         svg.write_attribute("fill", "none");
                     }
@@ -110,11 +111,11 @@ impl GraphicBuilder for SvgBuilder {
                     svg.start_element("path");
                     svg.write_attribute("d", path.to_string().as_str());
                     if let Stroke::Strokestyle(w, color) = stroke {
-                        svg.write_attribute("stroke", "dodgerblue");
+                        svg.write_attribute("stroke", color.to_string().as_str());
                         svg.write_attribute("stroke-width", w);
                     }
                     if let Fill::Fillstyle(color) = fill {
-                        svg.write_attribute("fill", "black");
+                        svg.write_attribute("fill", color.to_string().as_str());
                     } else {
                         svg.write_attribute("fill", "none");
                     }
