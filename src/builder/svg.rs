@@ -28,7 +28,6 @@ impl GraphicBuilder for SvgBuilder {
         let items_bbox = items.bbox();
         // println!("items_bbox:{:?}", items_bbox);
         if items_bbox.0 != 0. || items_bbox.1 != 0. {
-            // println!("MOVE {} {}", items_bbox.0, items_bbox.1);
             items = items.move_items(-items_bbox.0, -items_bbox.1);
         }
         // println!("items2:{:?}", items);
@@ -77,7 +76,6 @@ impl GraphicBuilder for SvgBuilder {
                         svg.write_attribute("stroke-width", w);
                     }
                     if let Fill::Fillstyle(color) = fill {
-                        dbg!(color.to_string());
                         svg.write_attribute("fill", color.to_string().as_str());
                     } else {
                         svg.write_attribute("fill", "none");
