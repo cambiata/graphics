@@ -157,7 +157,7 @@ pub const EBGARAMOND_UPPER_B: &'static [PathSegment] = &[
     Z,
 ];
 
-pub const EBGARAMOND_UPPPER_C: &'static [PathSegment] = &[
+pub const EBGARAMOND_UPPER_C: &'static [PathSegment] = &[
     M(407.0, -15.0),
     Q(337.0, -15.0, 272.0, 9.0),
     Q(207.0, 33.0, 156.0, 77.5),

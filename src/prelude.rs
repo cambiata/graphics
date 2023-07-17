@@ -4,6 +4,7 @@ pub type Result<T> = anyhow::Result<T>;
 pub use crate::builder::fuse::*;
 pub use crate::builder::svg::*;
 pub use crate::glyphs::cadenza::*;
+pub use crate::glyphs::ebgaramond::*;
 pub use crate::item::Color::*;
 pub use crate::item::Fill::{Fillstyle, NoFill};
 pub use crate::item::GraphicItem::*;
