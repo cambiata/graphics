@@ -44,6 +44,7 @@ pub enum Color {
     Lime,
     Gray,
     LightGray,
+    Green,
     Black,
     White,
 }
@@ -59,8 +60,27 @@ impl Display for Color {
             Color::Orange => write!(f, "orange"),
             Color::Purple => write!(f, "purple"),
             Color::Lime => write!(f, "lime"),
+            Color::Green => write!(f, "green"),
             Color::Black => write!(f, "black"),
             Color::White => write!(f, "white"),
+        }
+    }
+}
+
+impl Color {
+    pub fn from_str(s: &str) -> Self {
+        match s {
+            "blue" => Color::Blue,
+            "red" => Color::Red,
+            "orange" => Color::Orange,
+            "purple" => Color::Purple,
+            "lime" => Color::Lime,
+            "gray" => Color::Gray,
+            "lightgray" => Color::LightGray,
+            "green" => Color::Green,
+            "black" => Color::Black,
+            "white" => Color::White,
+            _ => Color::Black,
         }
     }
 }
