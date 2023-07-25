@@ -206,27 +206,10 @@ impl GraphicItems {
         let mut ret = vec![];
         for item in self.0.iter() {
             let new_item = match item {
-                GraphicItem::Line(x1, y1, x2, y2, stroke) => GraphicItem::Line(
-                    x1 + move_x,
-                    y1 + move_y,
-                    x2 + move_x,
-                    y2 + move_y,
-                    stroke.clone(),
-                ),
-                GraphicItem::Rect(x, y, w, h, stroke, fill) => {
-                    GraphicItem::Rect(x + move_x, y + move_y, *w, *h, stroke.clone(), fill.clone())
-                }
-                GraphicItem::Ellipse(x, y, w, h, stroke, fill) => GraphicItem::Ellipse(
-                    *x + move_x,
-                    y + move_y,
-                    *w,
-                    *h,
-                    stroke.clone(),
-                    fill.clone(),
-                ),
-                GraphicItem::Path(path, stroke, fill) => {
-                    GraphicItem::Path(path.move_path(move_x, move_y), stroke.clone(), fill.clone())
-                }
+                GraphicItem::Line(x1, y1, x2, y2, stroke) => GraphicItem::Line(x1 + move_x, y1 + move_y, x2 + move_x, y2 + move_y, stroke.clone()),
+                GraphicItem::Rect(x, y, w, h, stroke, fill) => GraphicItem::Rect(x + move_x, y + move_y, *w, *h, stroke.clone(), fill.clone()),
+                GraphicItem::Ellipse(x, y, w, h, stroke, fill) => GraphicItem::Ellipse(*x + move_x, y + move_y, *w, *h, stroke.clone(), fill.clone()),
+                GraphicItem::Path(path, stroke, fill) => GraphicItem::Path(path.move_path(move_x, move_y), stroke.clone(), fill.clone()),
             };
             ret.push(new_item);
         }
@@ -239,34 +222,10 @@ impl GraphicItems {
 
         for item in self.0.iter() {
             let new_item = match item {
-                GraphicItem::Line(x1, y1, x2, y2, stroke) => GraphicItem::Line(
-                    x1 * scale_x,
-                    y1 * scale_y,
-                    x2 * scale_x,
-                    y2 * scale_y,
-                    stroke.scale(scale_stroke),
-                ),
-                GraphicItem::Rect(x, y, w, h, stroke, fill) => GraphicItem::Rect(
-                    x * scale_x,
-                    y * scale_y,
-                    w * scale_x,
-                    h * scale_y,
-                    stroke.scale(scale_stroke),
-                    fill.clone(),
-                ),
-                GraphicItem::Ellipse(x, y, w, h, stroke, fill) => GraphicItem::Ellipse(
-                    x * scale_x,
-                    y * scale_y,
-                    w * scale_x,
-                    h * scale_y,
-                    stroke.clone(),
-                    fill.clone(),
-                ),
-                GraphicItem::Path(path, stroke, fill) => GraphicItem::Path(
-                    path.scale_path(scale_x, scale_y),
-                    stroke.scale(scale_stroke),
-                    fill.clone(),
-                ),
+                GraphicItem::Line(x1, y1, x2, y2, stroke) => GraphicItem::Line(x1 * scale_x, y1 * scale_y, x2 * scale_x, y2 * scale_y, stroke.scale(scale_stroke)),
+                GraphicItem::Rect(x, y, w, h, stroke, fill) => GraphicItem::Rect(x * scale_x, y * scale_y, w * scale_x, h * scale_y, stroke.scale(scale_stroke), fill.clone()),
+                GraphicItem::Ellipse(x, y, w, h, stroke, fill) => GraphicItem::Ellipse(x * scale_x, y * scale_y, w * scale_x, h * scale_y, stroke.clone(), fill.clone()),
+                GraphicItem::Path(path, stroke, fill) => GraphicItem::Path(path.scale_path(scale_x, scale_y), stroke.scale(scale_stroke), fill.clone()),
             };
             ret.push(new_item);
         }
