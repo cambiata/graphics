@@ -2,7 +2,7 @@
 pub mod builder;
 pub mod core;
 pub mod error;
-pub mod font;
+// pub mod font;
 pub mod glyphs;
 pub mod item;
 pub mod path;
@@ -12,8 +12,6 @@ pub mod prelude;
 mod tests {
 
     use std::fs;
-
-    use crate::CADENZA_3;
 
     use super::{
         builder::{fuse::FuseBuilder, svg::SvgBuilder, GraphicBuilder, TestBuilder},
@@ -81,14 +79,10 @@ mod tests {
     #[test]
     fn svg_path() {
         let items = GraphicItems(vec![Path(
-            PathSegments(vec![
-                M(0., 0.),
-                C(10., 0., 10., 10., 20., 10.),
-                L(0., 10.),
-                L(0., 0.),
-            ]),
+            PathSegments(vec![M(0., 0.), C(10., 0., 10., 10., 20., 10.), L(0., 10.), L(0., 0.)]),
             Strokestyle(2., Lime),
             Fillstyle(Blue),
+            crate::prelude::PathCacheInfo::NoCache,
         )]);
         let svg = SvgBuilder::new().build(items).unwrap();
         std::fs::write("./output/path.svg", svg).unwrap();
@@ -97,14 +91,10 @@ mod tests {
     #[test]
     fn test_fuse() {
         let mut items = GraphicItems(vec![Path(
-            PathSegments(vec![
-                M(0., 0.),
-                C(100., 0., 100., 100., 200., 100.),
-                L(0., 100.),
-                L(0., 0.),
-            ]),
+            PathSegments(vec![M(0., 0.), C(100., 0., 100., 100., 200., 100.), L(0., 100.), L(0., 0.)]),
             Strokestyle(10., Red),
             Fillstyle(Blue),
+            crate::prelude::PathCacheInfo::NoCache,
         )]);
 
         let factor = 0.001;
@@ -119,7 +109,7 @@ mod tests {
         let json = include_str!("../cadenza/cadenza-8.json");
         let path = PathSegments::from_json(json);
         let path = path.scale_path(0.1, -0.1);
-        let items = GraphicItems(vec![Path(path, NoStroke, Fillstyle(White))]);
+        let items = GraphicItems(vec![Path(path, NoStroke, Fillstyle(White), crate::prelude::PathCacheInfo::NoCache)]);
         let items_fuse = items.scale_items(0.002, -0.002, 0.002);
         let svg = SvgBuilder::new().build(items).unwrap();
         std::fs::write("cadenza.svg", svg).unwrap();
@@ -134,8 +124,8 @@ mod tests {
         // let path = PathSegments::from_json(json);
         // let path = path.scale_path(0.1, -0.1);
 
-        let path = PathSegments(CADENZA_8.to_vec()).scale_path(1.0, -1.0);
-        let mut items = GraphicItems(vec![Path(path, NoStroke, Fillstyle(White))]);
+        let path = PathSegments(CADENZA_CLEF_G.to_vec()).scale_path(1.0, -1.0);
+        let mut items = GraphicItems(vec![Path(path, NoStroke, Fillstyle(White), crate::prelude::PathCacheInfo::NoCache)]);
         let items_fuse = items.scale_items(0.002, -0.002, 0.002);
         let svg = SvgBuilder::new().build(items).unwrap();
         std::fs::write("./data.svg", svg).unwrap();
@@ -153,10 +143,7 @@ mod tests {
             let pathname = format!("./cadenza/{}.json", filename);
             // let json = include_str!("../cadenza/cadenza-8.json");
             let mut json = fs::read_to_string(&pathname).unwrap();
-            let mut s = format!(
-                "// pub const {} : &'static [PathSegment] = &",
-                filename.to_uppercase()
-            );
+            let mut s = format!("// pub const {} : &'static [PathSegment] = &", filename.to_uppercase());
             s = s.replace("-", "_");
             s = s.replace("\r", "");
             s = s.replace("\n", "");
@@ -180,76 +167,42 @@ mod tests {
 
         fs::write("./cadenza/cadenza.rs", cadenza).unwrap();
     }
-
-    use rusttype::{Font, Point};
-
-    #[test]
-    fn test_font() {
-        let font_data = include_bytes!("../fonts/MTF-Cadence-Fin.ttf");
-        // let font_data = include_bytes!("../Leland.otf");
-        // let font_data = include_bytes!("../LelandText.otf");
-        // let font_data = include_bytes!("../AvenirNextCyr-Medium.ttf");
-        let font = Font::try_from_bytes(font_data as &[u8]).expect("Error constructing Font");
-
-        let x = 5.;
-        let y = 10.;
-
-        let pathtext = crate::font::PathText::builder()
-            .size(200.0)
-            .start(Point { x, y })
-            .build(&font, "&");
-
-        let items = GraphicItems(vec![Path(
-            PathSegments(pathtext.path_segments),
-            NoStroke,
-            Fillstyle(Blue),
-        )]);
-
-        let svg = SvgBuilder::new().build(items).unwrap();
-        std::fs::write("./output/clef.svg", svg).unwrap();
-    }
-
-    #[test]
-    fn test_avenir() {
-        let font_data = include_bytes!("../fonts/AvenirNextCyr-Medium.ttf");
-        // let font_data = include_bytes!("../fonts/Leland.otf");
-        let font = Font::try_from_bytes(font_data as &[u8]).expect("Error constructing Font");
-        let x = 5.;
-        let y = 10.;
-
-        let pathtext = crate::font::PathText::builder()
-            .size(200.0)
-            .start(Point { x, y })
-            .build(&font, "ABCabc123&%#åäöÅÄÖ");
-
-        let items = GraphicItems(vec![Path(
-            PathSegments(pathtext.path_segments),
-            NoStroke,
-            Fillstyle(Blue),
-        )]);
-
-        let svg = SvgBuilder::new().build(items).unwrap();
-        std::fs::write("./output/avenir.svg", svg).unwrap();
-    }
 }
 
-use crate::path::PathSegment::*;
-use crate::path::*;
+//     use rusttype::{Font, Point};
 
-const CADENZA_3X: &'static [PathSegment] = &[
-    M(301.0, 281.0),
-    L(301.0, 160.0),
-    L(0.0, -1.0),
-    L(0.0, 124.0),
-    L(301.0, 281.0),
-    Z,
-];
+//     #[test]
+//     fn test_font() {
+//         let font_data = include_bytes!("../fonts/MTF-Cadence-Fin.ttf");
+//         // let font_data = include_bytes!("../Leland.otf");
+//         // let font_data = include_bytes!("../LelandText.otf");
+//         // let font_data = include_bytes!("../AvenirNextCyr-Medium.ttf");
+//         let font = Font::try_from_bytes(font_data as &[u8]).expect("Error constructing Font");
 
-const CADENZA_3: &'static [PathSegment] = &[
-    M(301.0, 281.0),
-    L(301.0, 160.0),
-    L(0.0, -1.0),
-    L(0.0, 124.0),
-    L(301.0, 281.0),
-    Z,
-];
+//         let x = 5.;
+//         let y = 10.;
+
+//         let pathtext = crate::font::PathText::builder().size(200.0).start(Point { x, y }).build(&font, "&");
+
+//         let items = GraphicItems(vec![Path(PathSegments(pathtext.path_segments), NoStroke, Fillstyle(Blue), crate::prelude::PathCacheInfo::NoCache)]);
+
+//         let svg = SvgBuilder::new().build(items).unwrap();
+//         std::fs::write("./output/clef.svg", svg).unwrap();
+//     }
+
+//     #[test]
+//     fn test_avenir() {
+//         let font_data = include_bytes!("../fonts/AvenirNextCyr-Medium.ttf");
+//         // let font_data = include_bytes!("../fonts/Leland.otf");
+//         let font = Font::try_from_bytes(font_data as &[u8]).expect("Error constructing Font");
+//         let x = 5.;
+//         let y = 10.;
+
+//         let pathtext = crate::font::PathText::builder().size(200.0).start(Point { x, y }).build(&font, "ABCabc123&%#åäöÅÄÖ");
+
+//         let items = GraphicItems(vec![Path(PathSegments(pathtext.path_segments), NoStroke, Fillstyle(Blue), crate::prelude::PathCacheInfo::NoCache)]);
+
+//         let svg = SvgBuilder::new().build(items).unwrap();
+//         std::fs::write("./output/avenir.svg", svg).unwrap();
+//     }
+// }
