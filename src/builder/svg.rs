@@ -37,16 +37,7 @@ impl GraphicBuilder for SvgBuilder {
         svg.write_attribute("xmlns", "http://www.w3.org/2000/svg");
         svg.write_attribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
 
-        svg.write_attribute_fmt(
-            "viewBox",
-            format_args!(
-                "{} {} {} {}",
-                0,
-                0,
-                items_bbox.2 + (-items_bbox.0),
-                items_bbox.3 + (-items_bbox.1)
-            ),
-        );
+        svg.write_attribute_fmt("viewBox", format_args!("{} {} {} {}", 0, 0, items_bbox.2 + (-items_bbox.0), items_bbox.3 + (-items_bbox.1)));
 
         for item in items.0.iter() {
             match item {
@@ -104,7 +95,7 @@ impl GraphicBuilder for SvgBuilder {
                     svg.end_element();
                 }
 
-                GraphicItem::Path(path, stroke, fill) => {
+                GraphicItem::Path(path, stroke, fill, cache) => {
                     // println!("- Path:{:?}", item);
                     svg.start_element("path");
                     svg.write_attribute("d", path.to_string().as_str());
@@ -125,14 +116,8 @@ impl GraphicBuilder for SvgBuilder {
         svg.start_element("rect");
         svg.write_attribute("x", "0");
         svg.write_attribute("y", "0");
-        svg.write_attribute(
-            "width",
-            (items_bbox.2 + (-items_bbox.0)).to_string().as_str(),
-        );
-        svg.write_attribute(
-            "height",
-            (items_bbox.3 + (-items_bbox.1)).to_string().as_str(),
-        );
+        svg.write_attribute("width", (items_bbox.2 + (-items_bbox.0)).to_string().as_str());
+        svg.write_attribute("height", (items_bbox.3 + (-items_bbox.1)).to_string().as_str());
         svg.write_attribute("stroke", "black");
         svg.write_attribute("stroke-width", "1");
         svg.write_attribute("fill", "none");

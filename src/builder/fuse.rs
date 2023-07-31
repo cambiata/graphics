@@ -68,10 +68,7 @@ impl GraphicBuilder for FuseBuilder {
                         buffer.push_str("\n\tline = Shape()");
                         buffer.push_str(format!("\n\tline:MoveTo({}, {})", *x1, *y1).as_str());
                         buffer.push_str(format!("\n\tline:LineTo({}, {})", *x2, *y2).as_str());
-                        buffer.push_str(
-                            format!("\n\tline = line:OutlineOfShape({},\"OLT_Solid\")", width)
-                                .as_str(),
-                        );
+                        buffer.push_str(format!("\n\tline = line:OutlineOfShape({},\"OLT_Solid\")", width).as_str());
                         buffer = add_after_line(buffer, color);
                     }
                 }
@@ -80,9 +77,7 @@ impl GraphicBuilder for FuseBuilder {
                         buffer.push_str("\n\tline = Shape()");
                         buffer.push_str(format!("\n\tline:MoveTo({}, {})", *x, *y).as_str());
                         buffer.push_str(format!("\n\tline:LineTo({}, {})", *x + *w, *y).as_str());
-                        buffer.push_str(
-                            format!("\n\tline:LineTo({}, {})", *x + *w, *y + *h).as_str(),
-                        );
+                        buffer.push_str(format!("\n\tline:LineTo({}, {})", *x + *w, *y + *h).as_str());
                         buffer.push_str(format!("\n\tline:LineTo({}, {})", *x, *y + *h).as_str());
                         buffer.push_str("\n\tline:Close()");
                         buffer = add_after_line(buffer, color);
@@ -92,19 +87,14 @@ impl GraphicBuilder for FuseBuilder {
                         buffer.push_str("\n\tline = Shape()");
                         buffer.push_str(format!("\n\tline:MoveTo({}, {})", *x, *y).as_str());
                         buffer.push_str(format!("\n\tline:LineTo({}, {})", *x + *w, *y).as_str());
-                        buffer.push_str(
-                            format!("\n\tline:LineTo({}, {})", *x + *w, *y + *h).as_str(),
-                        );
+                        buffer.push_str(format!("\n\tline:LineTo({}, {})", *x + *w, *y + *h).as_str());
                         buffer.push_str(format!("\n\tline:LineTo({}, {})", *x, *y + *h).as_str());
                         buffer.push_str(format!("\n\tline:LineTo({}, {})", *x, *y).as_str());
-                        buffer.push_str(
-                            format!("\n\tline = line:OutlineOfShape({},\"OLT_Solid\")", width)
-                                .as_str(),
-                        );
+                        buffer.push_str(format!("\n\tline = line:OutlineOfShape({},\"OLT_Solid\")", width).as_str());
                         buffer = add_after_line(buffer, color);
                     }
                 }
-                GraphicItem::Path(path, stroke, fill) => {
+                GraphicItem::Path(path, stroke, fill, cache) => {
                     fn add_path(mut buffer: String, path: &PathSegments) -> String {
                         let mut prev_x: f32 = 0.;
                         let mut prev_y: f32 = 0.;
@@ -112,16 +102,12 @@ impl GraphicBuilder for FuseBuilder {
                         for segment in path.0.iter() {
                             match segment {
                                 M(x, y) => {
-                                    buffer.push_str(
-                                        format!("\n\tline:MoveTo({}, {})", x, y).as_str(),
-                                    );
+                                    buffer.push_str(format!("\n\tline:MoveTo({}, {})", x, y).as_str());
                                     prev_x = *x;
                                     prev_y = *y;
                                 }
                                 L(x, y) => {
-                                    buffer.push_str(
-                                        format!("\n\tline:LineTo({}, {})", x, y).as_str(),
-                                    );
+                                    buffer.push_str(format!("\n\tline:LineTo({}, {})", x, y).as_str());
                                     prev_x = *x;
                                     prev_y = *y;
                                 }
@@ -131,14 +117,26 @@ impl GraphicBuilder for FuseBuilder {
                                     let c2x = x + (2. / 3.) * (x1 - x);
                                     let c2y = y + (2. / 3.) * (y1 - y);
 
-                                    buffer.push_str(format!("\n\tline = BezierTo2(line, {{X={}, Y={}}}, {{X={}, Y={}}}, {{X={}, Y={}}}, {{X={}, Y={}}}, 20)", prev_x, prev_y, c1x,c1y, c2x, c2y, x, y).as_str());
+                                    buffer.push_str(
+                                        format!(
+                                            "\n\tline = BezierTo2(line, {{X={}, Y={}}}, {{X={}, Y={}}}, {{X={}, Y={}}}, {{X={}, Y={}}}, 20)",
+                                            prev_x, prev_y, c1x, c1y, c2x, c2y, x, y
+                                        )
+                                        .as_str(),
+                                    );
 
                                     prev_x = *x;
                                     prev_y = *y;
                                 }
                                 C(x1, y1, x2, y2, x, y) => {
                                     // addLine('line = BezierTo2(line, {X=${cubic.sx}, Y=${cubic.sy}}, {X=${cubic.c1x}, Y=${cubic.c1y}},  {X=${cubic.c2x}, Y=${cubic.c2y}}, {X=${cubic.ex}, Y=${cubic.ey}}, 20)');
-                                    buffer.push_str(format!("\n\tline = BezierTo2(line, {{X={}, Y={}}}, {{X={}, Y={}}}, {{X={}, Y={}}}, {{X={}, Y={}}}, 20)", prev_x, prev_y, x1, y1, x2, y2, x, y).as_str());
+                                    buffer.push_str(
+                                        format!(
+                                            "\n\tline = BezierTo2(line, {{X={}, Y={}}}, {{X={}, Y={}}}, {{X={}, Y={}}}, {{X={}, Y={}}}, 20)",
+                                            prev_x, prev_y, x1, y1, x2, y2, x, y
+                                        )
+                                        .as_str(),
+                                    );
                                     prev_x = *x;
                                     prev_y = *y;
                                 }
@@ -155,10 +153,7 @@ impl GraphicBuilder for FuseBuilder {
 
                     if let Strokestyle(width, color) = stroke {
                         buffer = add_path(buffer, &path);
-                        buffer.push_str(
-                            format!("\n\tline = line:OutlineOfShape({},\"OLT_Solid\")", width)
-                                .as_str(),
-                        );
+                        buffer.push_str(format!("\n\tline = line:OutlineOfShape({},\"OLT_Solid\")", width).as_str());
                         buffer = add_after_line(buffer, color);
                     }
                 }

@@ -10,7 +10,13 @@ pub enum GraphicItem {
     Line(f32, f32, f32, f32, Stroke),
     Rect(f32, f32, f32, f32, Stroke, Fill),
     Ellipse(f32, f32, f32, f32, Stroke, Fill),
-    Path(PathSegments, Stroke, Fill),
+    Path(PathSegments, Stroke, Fill, PathCacheInfo),
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum PathCacheInfo {
+    NoCache,
+    Cache(String, f32, f32),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -154,7 +160,7 @@ impl GraphicItems {
                     y_max = y_max.max(*y + *h + sw);
                 }
 
-                GraphicItem::Path(path, stroke, _) => {
+                GraphicItem::Path(path, stroke, _, _) => {
                     let sw = get_stroke_width(stroke);
 
                     for segment in path.0.iter() {
@@ -209,7 +215,7 @@ impl GraphicItems {
                 GraphicItem::Line(x1, y1, x2, y2, stroke) => GraphicItem::Line(x1 + move_x, y1 + move_y, x2 + move_x, y2 + move_y, stroke.clone()),
                 GraphicItem::Rect(x, y, w, h, stroke, fill) => GraphicItem::Rect(x + move_x, y + move_y, *w, *h, stroke.clone(), fill.clone()),
                 GraphicItem::Ellipse(x, y, w, h, stroke, fill) => GraphicItem::Ellipse(*x + move_x, y + move_y, *w, *h, stroke.clone(), fill.clone()),
-                GraphicItem::Path(path, stroke, fill) => GraphicItem::Path(path.move_path(move_x, move_y), stroke.clone(), fill.clone()),
+                GraphicItem::Path(path, stroke, fill, cache) => GraphicItem::Path(path.move_path(move_x, move_y), stroke.clone(), fill.clone(), cache.clone()),
             };
             ret.push(new_item);
         }
@@ -225,7 +231,7 @@ impl GraphicItems {
                 GraphicItem::Line(x1, y1, x2, y2, stroke) => GraphicItem::Line(x1 * scale_x, y1 * scale_y, x2 * scale_x, y2 * scale_y, stroke.scale(scale_stroke)),
                 GraphicItem::Rect(x, y, w, h, stroke, fill) => GraphicItem::Rect(x * scale_x, y * scale_y, w * scale_x, h * scale_y, stroke.scale(scale_stroke), fill.clone()),
                 GraphicItem::Ellipse(x, y, w, h, stroke, fill) => GraphicItem::Ellipse(x * scale_x, y * scale_y, w * scale_x, h * scale_y, stroke.clone(), fill.clone()),
-                GraphicItem::Path(path, stroke, fill) => GraphicItem::Path(path.scale_path(scale_x, scale_y), stroke.scale(scale_stroke), fill.clone()),
+                GraphicItem::Path(path, stroke, fill, cache) => GraphicItem::Path(path.scale_path(scale_x, scale_y), stroke.scale(scale_stroke), fill.clone(), cache.clone()),
             };
             ret.push(new_item);
         }
