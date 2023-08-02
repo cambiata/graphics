@@ -19,12 +19,8 @@ impl PathSegments {
             match segment {
                 PathSegment::M(x, y) => write!(path_buf, "M {} {} ", x, y).unwrap(),
                 PathSegment::L(x, y) => write!(path_buf, "L {} {} ", x, y).unwrap(),
-                PathSegment::Q(x1, y1, x, y) => {
-                    write!(path_buf, "Q {} {} {} {} ", x1, y1, x, y).unwrap()
-                }
-                PathSegment::C(x1, y1, x2, y2, x, y) => {
-                    write!(path_buf, "C {} {} {} {} {} {} ", x1, y1, x2, y2, x, y).unwrap()
-                }
+                PathSegment::Q(x1, y1, x, y) => write!(path_buf, "Q {} {} {} {} ", x1, y1, x, y).unwrap(),
+                PathSegment::C(x1, y1, x2, y2, x, y) => write!(path_buf, "C {} {} {} {} {} {} ", x1, y1, x2, y2, x, y).unwrap(),
                 PathSegment::Z => path_buf.push_str("Z "),
             }
         }
@@ -45,17 +41,8 @@ impl PathSegments {
             let new_segment: PathSegment = match segment {
                 PathSegment::M(x, y) => PathSegment::M(x + move_x, y + move_y),
                 PathSegment::L(x, y) => PathSegment::L(x + move_x, y + move_y),
-                PathSegment::Q(x1, y1, x, y) => {
-                    PathSegment::Q(x1 + move_x, y1 + move_y, x + move_x, y + move_y)
-                }
-                PathSegment::C(x1, y1, x2, y2, x, y) => PathSegment::C(
-                    x1 + move_x,
-                    y1 + move_y,
-                    x2 + move_x,
-                    y2 + move_y,
-                    x + move_x,
-                    y + move_y,
-                ),
+                PathSegment::Q(x1, y1, x, y) => PathSegment::Q(x1 + move_x, y1 + move_y, x + move_x, y + move_y),
+                PathSegment::C(x1, y1, x2, y2, x, y) => PathSegment::C(x1 + move_x, y1 + move_y, x2 + move_x, y2 + move_y, x + move_x, y + move_y),
                 PathSegment::Z => PathSegment::Z,
             };
             segments.push(new_segment);
@@ -69,17 +56,8 @@ impl PathSegments {
             let new_segment: PathSegment = match segment {
                 PathSegment::M(x, y) => PathSegment::M(x * scale_x, y * scale_y),
                 PathSegment::L(x, y) => PathSegment::L(x * scale_x, y * scale_y),
-                PathSegment::Q(x1, y1, x, y) => {
-                    PathSegment::Q(x1 * scale_x, y1 * scale_y, x * scale_x, y * scale_y)
-                }
-                PathSegment::C(x1, y1, x2, y2, x, y) => PathSegment::C(
-                    x1 * scale_x,
-                    y1 * scale_y,
-                    x2 * scale_x,
-                    y2 * scale_y,
-                    x * scale_x,
-                    y * scale_y,
-                ),
+                PathSegment::Q(x1, y1, x, y) => PathSegment::Q(x1 * scale_x, y1 * scale_y, x * scale_x, y * scale_y),
+                PathSegment::C(x1, y1, x2, y2, x, y) => PathSegment::C(x1 * scale_x, y1 * scale_y, x2 * scale_x, y2 * scale_y, x * scale_x, y * scale_y),
                 PathSegment::Z => PathSegment::Z,
             };
             segments.push(new_segment);
