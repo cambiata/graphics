@@ -14,6 +14,7 @@ use crate::path::{
 };
 
 pub use super::GraphicBuilder;
+use super::{BuilderOptions, SizeUnit};
 
 pub struct SvgBuilder {}
 
@@ -24,7 +25,7 @@ impl SvgBuilder {
 }
 
 impl GraphicBuilder for SvgBuilder {
-    fn build(&mut self, mut items: GraphicItems) -> Result<String> {
+    fn build(&mut self, mut items: GraphicItems, options: Option<BuilderOptions>) -> Result<String> {
         let items_bbox = items.bbox();
         // println!("items_bbox:{:?}", items_bbox);
         if items_bbox.0 != 0. || items_bbox.1 != 0. {
@@ -36,6 +37,27 @@ impl GraphicBuilder for SvgBuilder {
         svg.start_element("svg");
         svg.write_attribute("xmlns", "http://www.w3.org/2000/svg");
         svg.write_attribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+
+        let svg_width_value = items_bbox.2 + (-items_bbox.0);
+        let svg_height_value = items_bbox.3 + (-items_bbox.1);
+
+        let svg_width = match options {
+            Some(ref options) => match options.size_unit {
+                SizeUnit::Pixel => (svg_width_value * options.size_scaling).to_string(),
+                SizeUnit::Rem => (svg_width_value * options.size_scaling).to_string() + "rem",
+            },
+            None => svg_width_value.to_string(),
+        };
+        let svg_height = match options {
+            Some(ref options) => match options.size_unit {
+                SizeUnit::Pixel => (svg_height_value * options.size_scaling).to_string(),
+                SizeUnit::Rem => (svg_height_value * options.size_scaling).to_string() + "rem",
+            },
+            None => svg_height_value.to_string(),
+        };
+
+        svg.write_attribute("width", svg_width.as_str());
+        svg.write_attribute("height", svg_height.as_str());
 
         svg.write_attribute_fmt("viewBox", format_args!("{} {} {} {}", 0, 0, items_bbox.2 + (-items_bbox.0), items_bbox.3 + (-items_bbox.1)));
 

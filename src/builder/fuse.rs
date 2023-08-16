@@ -13,7 +13,7 @@ use crate::path::{
     PathSegments,
 };
 
-use super::GraphicBuilder;
+use super::{BuilderOptions, GraphicBuilder};
 
 pub struct FuseBuilder;
 
@@ -24,7 +24,7 @@ impl FuseBuilder {
 }
 
 impl GraphicBuilder for FuseBuilder {
-    fn build(&mut self, mut items: GraphicItems) -> Result<String> {
+    fn build(&mut self, mut items: GraphicItems, options: Option<BuilderOptions>) -> Result<String> {
         let items_bbox = items.bbox();
         // println!("items_bbox:{:?}", items_bbox);
         if items_bbox.0 != 0. || items_bbox.1 != 0. {

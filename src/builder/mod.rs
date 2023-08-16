@@ -17,8 +17,18 @@ use crate::path::{
     PathSegments,
 };
 
+pub enum SizeUnit {
+    Pixel,
+    Rem,
+}
+
+pub struct BuilderOptions {
+    pub size_unit: SizeUnit,
+    pub size_scaling: f32,
+}
+
 pub trait GraphicBuilder {
-    fn build(&mut self, items: GraphicItems) -> Result<String>;
+    fn build(&mut self, items: GraphicItems, options: Option<BuilderOptions>) -> Result<String>;
 }
 
 //----------------------------------------------------------------------
@@ -32,7 +42,7 @@ impl TestBuilder {
 }
 
 impl GraphicBuilder for TestBuilder {
-    fn build(&mut self, items: GraphicItems) -> Result<String> {
+    fn build(&mut self, items: GraphicItems, options: Option<BuilderOptions>) -> Result<String> {
         println!("TestBuilder::build()");
         for item in items.0.iter() {
             println!("- item:{:?}", item);
