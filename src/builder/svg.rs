@@ -56,6 +56,8 @@ impl GraphicBuilder for SvgBuilder {
             None => svg_height_value.to_string(),
         };
 
+        dbg!(&options, &svg_width_value, &svg_width, &svg_height);
+
         svg.write_attribute("width", svg_width.as_str());
         svg.write_attribute("height", svg_height.as_str());
 

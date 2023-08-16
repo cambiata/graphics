@@ -17,11 +17,13 @@ use crate::path::{
     PathSegments,
 };
 
+#[derive(Debug, Clone, Copy)]
 pub enum SizeUnit {
     Pixel,
     Rem,
 }
 
+#[derive(Debug, Clone, Copy)]
 pub struct BuilderOptions {
     pub size_unit: SizeUnit,
     pub size_scaling: f32,
