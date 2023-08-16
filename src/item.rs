@@ -2,7 +2,8 @@ use std::fmt::{Display, Formatter};
 
 use serde::{Deserialize, Serialize};
 
-use crate::core::Rectangle;
+use crate::prelude::*;
+
 use crate::path::{PathSegment, PathSegments};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -75,7 +76,7 @@ impl Display for Color {
 
 impl Color {
     pub fn from_str(s: &str) -> Self {
-        match s {
+        match s.to_lowercase().as_str() {
             "blue" => Color::Blue,
             "red" => Color::Red,
             "orange" => Color::Orange,

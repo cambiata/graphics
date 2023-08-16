@@ -24,13 +24,16 @@ impl PathSegments {
                 PathSegment::Z => path_buf.push_str("Z "),
             }
         }
-        // println!("path_buf:{:?}", path_buf);
         path_buf
     }
 
     pub fn from_json(json: &str) -> PathSegments {
         let path: Vec<PathSegment> = serde_json::from_str(json).unwrap();
         PathSegments(path)
+    }
+
+    pub fn extend(&mut self, other: &PathSegments) {
+        self.0.extend(other.0.iter().cloned());
     }
 }
 
