@@ -43,20 +43,20 @@ impl GraphicBuilder for SvgBuilder {
 
         let svg_width = match options {
             Some(ref options) => match options.size_unit {
-                SizeUnit::Pixel => (svg_width_value * options.size_scaling).to_string(),
-                SizeUnit::Rem => (svg_width_value * options.size_scaling).to_string() + "rem",
+                SizeUnit::Pixel => (round2(svg_width_value * options.size_scaling)).to_string(),
+                SizeUnit::Rem => (round2(svg_width_value * options.size_scaling)).to_string() + "rem",
             },
             None => svg_width_value.to_string(),
         };
         let svg_height = match options {
             Some(ref options) => match options.size_unit {
-                SizeUnit::Pixel => (svg_height_value * options.size_scaling).to_string(),
-                SizeUnit::Rem => (svg_height_value * options.size_scaling).to_string() + "rem",
+                SizeUnit::Pixel => (round2(svg_height_value * options.size_scaling)).to_string(),
+                SizeUnit::Rem => (round2(svg_height_value * options.size_scaling)).to_string() + "rem",
             },
             None => svg_height_value.to_string(),
         };
 
-        dbg!(&options, &svg_width_value, &svg_width, &svg_height);
+        // dbg!(&options, &svg_width_value, &svg_width, &svg_height);
 
         svg.write_attribute("width", svg_width.as_str());
         svg.write_attribute("height", svg_height.as_str());
@@ -150,4 +150,8 @@ impl GraphicBuilder for SvgBuilder {
         let str = svg.end_document();
         Ok(str)
     }
+}
+
+fn round2(v: f32) -> f32 {
+    (v * 100.).round() / 100.
 }
