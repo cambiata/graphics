@@ -1,6 +1,6 @@
-FuRegisterClass("RustTestFuse", CT_SourceTool, {
-    REGS_Name = "RustTestFuse",
-    REGS_Category = "RustGenerated",
+FuRegisterClass("@FUSE_NAME@", CT_SourceTool, {
+    REGS_Name = "@FUSE_NAME@",
+    REGS_Category = "@FUSE_CATEGORY@",
 
     REGS_OpIconString = "XX2",
     REGS_OpDescription = "RustTestFuse example.",    

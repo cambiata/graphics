@@ -142,7 +142,7 @@ impl GraphicBuilder for SvgBuilder {
         svg.write_attribute("y", "0");
         svg.write_attribute("width", (items_bbox.2 + (-items_bbox.0)).to_string().as_str());
         svg.write_attribute("height", (items_bbox.3 + (-items_bbox.1)).to_string().as_str());
-        svg.write_attribute("stroke", "black");
+        svg.write_attribute("stroke", "white");
         svg.write_attribute("stroke-width", "1");
         svg.write_attribute("fill", "none");
         svg.end_element();
