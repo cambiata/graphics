@@ -86,7 +86,7 @@ impl GraphicBuilder for SvgBuilder {
         );
 
         // Cache elements -----------------------------------------
-        svg.start_element("g");
+        svg.start_element("defs");
         svg.write_attribute("visibility", "hidden");
         for item in items.0.iter() {
             match item {
