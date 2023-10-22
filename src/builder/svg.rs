@@ -25,7 +25,11 @@ impl SvgBuilder {
 }
 
 impl GraphicBuilder for SvgBuilder {
-    fn build(&mut self, mut items: GraphicItems, options: Option<BuilderOptions>) -> Result<String> {
+    fn build(
+        &mut self,
+        mut items: GraphicItems,
+        options: Option<BuilderOptions>,
+    ) -> Result<String> {
         let items_bbox = items.bbox();
         // println!("items_bbox:{:?}", items_bbox);
         if items_bbox.0 != 0. || items_bbox.1 != 0. {
@@ -44,14 +48,18 @@ impl GraphicBuilder for SvgBuilder {
         let svg_width = match options {
             Some(ref options) => match options.size_unit {
                 SizeUnit::Pixel => (round2(svg_width_value * options.size_scaling)).to_string(),
-                SizeUnit::Rem => (round2(svg_width_value * options.size_scaling)).to_string() + "rem",
+                SizeUnit::Rem => {
+                    (round2(svg_width_value * options.size_scaling)).to_string() + "rem"
+                }
             },
             None => svg_width_value.to_string(),
         };
         let svg_height = match options {
             Some(ref options) => match options.size_unit {
                 SizeUnit::Pixel => (round2(svg_height_value * options.size_scaling)).to_string(),
-                SizeUnit::Rem => (round2(svg_height_value * options.size_scaling)).to_string() + "rem",
+                SizeUnit::Rem => {
+                    (round2(svg_height_value * options.size_scaling)).to_string() + "rem"
+                }
             },
             None => svg_height_value.to_string(),
         };
@@ -61,7 +69,16 @@ impl GraphicBuilder for SvgBuilder {
         svg.write_attribute("width", svg_width.as_str());
         svg.write_attribute("height", svg_height.as_str());
 
-        svg.write_attribute_fmt("viewBox", format_args!("{} {} {} {}", 0, 0, items_bbox.2 + (-items_bbox.0), items_bbox.3 + (-items_bbox.1)));
+        svg.write_attribute_fmt(
+            "viewBox",
+            format_args!(
+                "{} {} {} {}",
+                0,
+                0,
+                items_bbox.2 + (-items_bbox.0),
+                items_bbox.3 + (-items_bbox.1)
+            ),
+        );
 
         for item in items.0.iter() {
             match item {
@@ -140,8 +157,14 @@ impl GraphicBuilder for SvgBuilder {
         svg.start_element("rect");
         svg.write_attribute("x", "0");
         svg.write_attribute("y", "0");
-        svg.write_attribute("width", (items_bbox.2 + (-items_bbox.0)).to_string().as_str());
-        svg.write_attribute("height", (items_bbox.3 + (-items_bbox.1)).to_string().as_str());
+        svg.write_attribute(
+            "width",
+            (items_bbox.2 + (-items_bbox.0)).to_string().as_str(),
+        );
+        svg.write_attribute(
+            "height",
+            (items_bbox.3 + (-items_bbox.1)).to_string().as_str(),
+        );
         svg.write_attribute("stroke", "white");
         svg.write_attribute("stroke-width", "1");
         svg.write_attribute("fill", "none");
