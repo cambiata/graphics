@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::item::{
     Color,
     Color::{Blue, Lime, Purple, Red, RGBA},
@@ -30,6 +32,9 @@ impl GraphicBuilder for SvgBuilder {
         mut items: GraphicItems,
         options: Option<BuilderOptions>,
     ) -> Result<String> {
+        // println!("items1:{:?}", items);
+        let mut use_cache: HashMap<String, PathSegments> = HashMap::new();
+
         let items_bbox = items.bbox();
         // println!("items_bbox:{:?}", items_bbox);
         if items_bbox.0 != 0. || items_bbox.1 != 0. {
@@ -79,6 +84,29 @@ impl GraphicBuilder for SvgBuilder {
                 items_bbox.3 + (-items_bbox.1)
             ),
         );
+
+        // Cache elements -----------------------------------------
+        svg.start_element("g");
+        svg.write_attribute("visibility", "hidden");
+        for item in items.0.iter() {
+            match item {
+                GraphicItem::Path(path, stroke, fill, cache) => match cache {
+                    PathCacheInfo::Cache(ref tag, x, y) => {
+                        dbg!("Use cache");
+                        if !use_cache.contains_key(tag) {
+                            use_cache.insert(tag.to_string(), path.clone());
+                            svg.start_element("path");
+                            svg.write_attribute("id", tag);
+                            svg.write_attribute("d", path.to_string().as_str());
+                            svg.end_element();
+                        }
+                    }
+                    PathCacheInfo::NoCache => {}
+                },
+                _ => {}
+            }
+        }
+        svg.end_element();
 
         for item in items.0.iter() {
             match item {
@@ -136,21 +164,39 @@ impl GraphicBuilder for SvgBuilder {
                     svg.end_element();
                 }
 
-                GraphicItem::Path(path, stroke, fill, cache) => {
-                    // println!("- Path:{:?}", item);
-                    svg.start_element("path");
-                    svg.write_attribute("d", path.to_string().as_str());
-                    if let Stroke::Strokestyle(w, color) = stroke {
-                        svg.write_attribute("stroke", color.to_string().as_str());
-                        svg.write_attribute("stroke-width", w);
+                GraphicItem::Path(path, stroke, fill, cache) => match cache {
+                    PathCacheInfo::Cache(ref tag, x, y) => {
+                        let path = use_cache.get(tag).unwrap();
+                        svg.start_element("use");
+                        svg.write_attribute("href", &format!("#{}", tag));
+                        svg.write_attribute("x", x);
+                        svg.write_attribute("y", y);
+                        if let Stroke::Strokestyle(w, color) = stroke {
+                            svg.write_attribute("stroke", color.to_string().as_str());
+                            svg.write_attribute("stroke-width", w);
+                        }
+                        if let Fill::Fillstyle(color) = fill {
+                            svg.write_attribute("fill", color.to_string().as_str());
+                        } else {
+                            svg.write_attribute("fill", "none");
+                        }
+                        svg.end_element();
                     }
-                    if let Fill::Fillstyle(color) = fill {
-                        svg.write_attribute("fill", color.to_string().as_str());
-                    } else {
-                        svg.write_attribute("fill", "none");
+                    PathCacheInfo::NoCache => {
+                        svg.start_element("path");
+                        svg.write_attribute("d", path.to_string().as_str());
+                        if let Stroke::Strokestyle(w, color) = stroke {
+                            svg.write_attribute("stroke", color.to_string().as_str());
+                            svg.write_attribute("stroke-width", w);
+                        }
+                        if let Fill::Fillstyle(color) = fill {
+                            svg.write_attribute("fill", color.to_string().as_str());
+                        } else {
+                            svg.write_attribute("fill", "none");
+                        }
+                        svg.end_element();
                     }
-                    svg.end_element();
-                }
+                },
             }
         }
 
