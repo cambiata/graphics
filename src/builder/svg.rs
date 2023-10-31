@@ -200,6 +200,7 @@ impl GraphicBuilder for SvgBuilder {
             }
         }
 
+        // Bounding rectangle -----------------------------------------
         svg.start_element("rect");
         svg.write_attribute("x", "0");
         svg.write_attribute("y", "0");
@@ -211,10 +212,11 @@ impl GraphicBuilder for SvgBuilder {
             "height",
             (items_bbox.3 + (-items_bbox.1)).to_string().as_str(),
         );
-        svg.write_attribute("stroke", "white");
+        svg.write_attribute("stroke", "transparent");
         svg.write_attribute("stroke-width", "1");
         svg.write_attribute("fill", "none");
         svg.end_element();
+        // ------------------------------------------------------
 
         let str = svg.end_document();
         Ok(str)
